@@ -415,6 +415,7 @@
             gap: 2rem;
             max-width: 900px;
             margin: 0 auto;
+            color: rgba(255,255,255,0.05);
         }
         
         .edu-card {
@@ -425,6 +426,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            color: rgba(255,255,255,0.05);
         }
         
         .edu-card::before {
@@ -443,7 +445,7 @@
         }
         
         .edu-card h3 {
-            color: var(--gray-900);
+            color: rgba(255,255,255,0.05);;
             margin-bottom: 0.5rem;
             font-size: 1.3rem;
         }
@@ -455,13 +457,13 @@
         }
         
         .edu-card .periodo {
-            color: var(--gray-800);
+            color: rgba(255,255,255,0.05);;
             font-size: 0.9rem;
             margin-bottom: 1rem;
         }
         
         .edu-card p {
-            color: var(--gray-800);
+            color: rgba(255,255,255,0.05);;
             font-size: 0.95rem;
         }
         
@@ -658,7 +660,7 @@
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-content">
-                        <span class="timeline-date">09/2025 - Atual</span>
+                        <span class="timeline-date">09/2025 - 03/2026</span>
                         <h3>Desenvolvedor Pleno Python/JavaScript</h3>
                         <span class="empresa">WCT Fitness</span>
                         <p>Arquitetura de integrações ERPxHUB, web scraping inteligente, machine learning para e-commerce e análise preditiva. Desenvolvimento de dashboards interativos com Pandas, NumPy e visualizações avançadas.</p>
@@ -674,7 +676,7 @@
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-content">
-                        <span class="timeline-date">09/2023 - 12/2024</span>
+                        <span class="timeline-date">09/2021 - 05/2025</span>
                         <h3>Desenvolvedor C# .NET</h3>
                         <span class="empresa">TecnoTRENDS</span>
                         <p>Desenvolvimento de ERP Educacional em ASP.NET, modernização de bibliotecas legadas, implementação de testes unitários e auditorias de sistema. Metodologias ágeis e code review rigoroso.</p>
@@ -682,7 +684,7 @@
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-content">
-                        <span class="timeline-date">03/2022 - 03/2023</span>
+                        <span class="timeline-date">05/2025 - 09/2025</span>
                         <h3>Desenvolvedor Digital Twin</h3>
                         <span class="empresa">Whirlpool</span>
                         <p>Desenvolvimento de interfaces de controle em tempo real para sensores industriais utilizando Python, OpenCV e TensorFlow. Análise diagnóstica com Pandas e visualizações Seaborn para manutenção preditiva.</p>
@@ -704,16 +706,16 @@
             <h2 class="section-title">Formação Acadêmica</h2>
             <div class="edu-grid">
                 <div class="edu-card">
-                    <h3>Engenharia de Software</h3>
+                    <h3>Bacharelado em Engenharia de Software</h3>
                     <span class="instituicao">Universidade Católica de Salvador</span>
                     <span class="periodo">2020 - 2025</span>
-                    <p>Formação sólida em arquitetura de software, engenharia de requisitos, qualidade e testes de software. TCC focado em sistemas distribuídos escaláveis.</p>
+                    <p>Onde obtive conhecimentos práticos em programação e uma visão 360º ao que envolve programação, Desempenhando bem desde o baixo nível até o frontend. Realize pesquisas científicas no campo de IA/Machine Learning, participei de Hackatons em 2020 e criei times de desenvolvimento universitários.</p>
                 </div>
                 <div class="edu-card">
                     <h3>Bacharelado em Matemática</h3>
                     <span class="instituicao">Universidade Federal da Bahia</span>
                     <span class="periodo">2014 - 2016</span>
-                    <p>Base matemática rigorosa em cálculo, álgebra linear, estatística e métodos numéricos. Iniciação científica em modelagem computacional e algoritmos.</p>
+                    <p>Desenvolvi visão pragmática, lógica e analítica para resolver problemas complexos de natureza lógica. Me deu a base linguística matemática, se tornando ferramenta ótica para solucionar problemas complexos com agilidade e praticidade. Desenvolvi pesquisas no campo de teoria dos números e teoria dos conjuntos (Grupo G, Meta-Simetria de Galois e Órbitas/Estabilizantes).</p>
                 </div>
             </div>
         </div>
@@ -883,7 +885,7 @@
         monoCtx.fillText('LPS', 256, 256);
         
         const monoTexture = new THREE.CanvasTexture(monoCanvas);
-        const monoSpriteMat = new THREE.SpriteMaterial({ map: monoTexture });
+        const monoSpriteMat = new THREE.SpriteMaterial({ map: monoTexture, transparent: true, opacity: 0 });
         const monoSprite = new THREE.Sprite(monoSpriteMat);
         monoSprite.scale.set(3, 3, 1);
         monogram.add(monoSprite);
@@ -918,16 +920,32 @@
                         cube.rotation.y += 0.02;
                         
                         cube.scale.setScalar(1 - (mergeFactor * 0.5));
-                        cube.material.opacity = 1 - mergeFactor;
+                        
+                        // Garantir que os cubos fiquem totalmente transparentes no final
+                        if (mergeFactor > 0.8) {
+                            cube.material.opacity = 0;
+                            cube.children.forEach(child => {
+                                if (child.material) child.material.opacity = 0;
+                            });
+                        } else {
+                            cube.material.opacity = 1 - mergeFactor;
+                            cube.children.forEach(child => {
+                                if (child.material) child.material.opacity = 1 - mergeFactor;
+                            });
+                        }
                     });
                     
                     if (mergeFactor > 0.8) {
                         monogram.visible = true;
-                        monogram.material.opacity = (mergeFactor - 0.8) * 5;
-                        monoSprite.material.opacity = (mergeFactor - 0.8) * 5;
+                        // Transição rápida para opacidade 1
+                        const logoOpacity = Math.min(((mergeFactor - 0.8) * 5), 1);
+                        monogram.material.opacity = logoOpacity;
+                        monoSprite.material.opacity = logoOpacity;
                         monogram.rotation.y += 0.01;
                     } else {
                         monogram.visible = false;
+                        monogram.material.opacity = 0;
+                        monoSprite.material.opacity = 0;
                     }
                 } else {
                     cubes.forEach((cube, i) => {
@@ -940,9 +958,13 @@
                         cube.rotation.x += 0.005;
                         cube.rotation.y += 0.005;
                         cube.material.opacity = 0.9;
-                        cube.scale.setScalar(1);
+                        cube.children.forEach(child => {
+                            if (child.material) child.material.opacity = 1;
+                        });
                     });
                     monogram.visible = false;
+                    monogram.material.opacity = 0;
+                    monoSprite.material.opacity = 0;
                 }
             }
         });
